@@ -7,7 +7,7 @@ Future<Database> initializeDB() async {
     join(path, 'recargas.db'),
     onCreate: (database, version) async {
       await database.execute(
-        "CREATE TABLE telefonia(id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT NOT NULL, comision REAL NOT NULL, logo TEXT NOT NULL, saldo REAL NOT NULL, telefono INTEGER NOT NULL)",
+        "CREATE TABLE telefonia(id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT NOT NULL, comision REAL NOT NULL, saldo REAL NOT NULL, telefono INTEGER NOT NULL)",
       );
 
       await database.execute(
