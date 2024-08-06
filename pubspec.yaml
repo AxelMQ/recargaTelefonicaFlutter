@@ -20,6 +20,7 @@ dependencies:
   image_cropper: ^4.0.1
   lottie: ^2.3.2
   sqflite_common_ffi: ^2.2.5
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

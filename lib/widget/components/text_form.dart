@@ -37,14 +37,14 @@ class TextForm extends StatelessWidget {
           color: Colors.black87,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25.0),
+          borderRadius: BorderRadius.circular(10.0),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(
-            color: Color.fromARGB(255, 54, 80, 126),
+            color: Color.fromARGB(255, 55, 96, 167),
             width: 1.5,
           ),
-          borderRadius: BorderRadius.circular(25.0),
+          borderRadius: BorderRadius.circular(10.0),
         ),
       ),
     );

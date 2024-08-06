@@ -26,8 +26,8 @@ class Cliente {
 
   factory Cliente.fromMap(Map<String, dynamic> map) {
     return Cliente(
-      id: map['id'],
-      nombre: map['nombre'],
+      id: map['id'] as int?,
+      nombre: map['nombre']  as String? ?? '',
     );
   }
 }

@@ -41,11 +41,11 @@ class Telefonia {
 
   factory Telefonia.fromMap(Map<String, dynamic> map) {
     return Telefonia(
-      id: map['id'],
-      nombre: map['nombre'],
-      comision: map['comision'],
-      saldo: map['saldo'],
-      telefono: map['telefono'],
-    );
+      id: map['id']as int?,
+      nombre: map['nombre'] as String? ?? '',
+       comision: (map['comision'] as num?)?.toDouble() ?? 0.0,
+    saldo: (map['saldo'] as num?)?.toDouble() ?? 0.0,      
+    telefono: map['telefono'] as int? ?? 0,
+  );
   }
 }

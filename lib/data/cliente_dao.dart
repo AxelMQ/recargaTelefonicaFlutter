@@ -11,6 +11,7 @@ class ClienteDao {
   Future<List<Cliente>> retrieveCliente() async {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> queryResult = await db.query('cliente');
+    print('Datos obtenidos de la base de datos: $queryResult');
     return queryResult.map((e) => Cliente.fromMap(e)).toList();
   }
 

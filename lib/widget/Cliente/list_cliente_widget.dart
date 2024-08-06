@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:recarga_telefonica_flutter/data/cliente_dao.dart';
 import '../../model/cliente.dart';
+import '../../screen/ClienteDetail/cliente_detail_screen.dart';
 import '../components/alert_dialog_widget.dart';
 import '../components/confirm_alert_dialog.dart';
 import 'form_edit_cliente.dart';
@@ -26,11 +28,17 @@ class ListClienteWidget extends StatelessWidget {
           );
         } else if (snapshot.hasError) {
           return Center(
-            child: Text('Error: ${snapshot.error}'),
+            child: Text(
+              'Error: ${snapshot.error}',
+              style: GoogleFonts.dosis(fontSize: 17),
+            ),
           );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(
-            child: Text('No se encontraron Clientes registrados.'),
+          return Center(
+            child: Text(
+              'No se encontraron Clientes registrados.',
+              style: GoogleFonts.dosis(fontSize: 17),
+            ),
           );
         } else {
           final clientes = snapshot.data!;
@@ -38,6 +46,8 @@ class ListClienteWidget extends StatelessWidget {
             itemCount: clientes.length,
             itemBuilder: (context, index) {
               final cliente = clientes[index];
+              print(
+                  'Cliente en ListView: ${cliente.nombre}, ID: ${cliente.id}');
               return Dismissible(
                 key: Key(cliente.id.toString()),
                 background: Container(
@@ -111,8 +121,29 @@ class ListClienteWidget extends StatelessWidget {
                   return false;
                 },
                 child: ListTile(
-                  title: Text(cliente.nombre),
-                  subtitle: Text('ID: ${cliente.id}'),
+                  title: Text(
+                    cliente.nombre,
+                    style: GoogleFonts.dosis(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'ID: ${cliente.id}',
+                    style: GoogleFonts.titilliumWeb(
+                      fontSize: 15,
+                    ),
+                  ),
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ClienteDetailScreen(
+                          cliente: cliente,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               );
             },

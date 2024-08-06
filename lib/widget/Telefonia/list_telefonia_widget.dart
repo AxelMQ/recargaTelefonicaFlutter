@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:recarga_telefonica_flutter/data/telefonia_dao.dart';
 import 'package:recarga_telefonica_flutter/widget/Telefonia/form_edit_telefonia.dart';
 import '../../model/telefonia.dart';
@@ -23,10 +24,18 @@ class ListTelefoniaWidget extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(
+            child: Text(
+              'Error: ${snapshot.error}',
+              style: GoogleFonts.dosis(fontSize: 17),
+            ),
+          );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(
-            child: Text('No se encontraron Telefonias registradas.'),
+          return Center(
+            child: Text(
+              'No se encontraron Telefonias registradas.',
+              style: GoogleFonts.dosis(fontSize: 17),
+            ),
           );
         } else {
           final telefonias = snapshot.data!;
@@ -99,15 +108,25 @@ class ListTelefoniaWidget extends StatelessWidget {
                       },
                     );
                     if (result == true) {
-                     onUpdate(); 
+                      onUpdate();
                     }
                   }
                   return false;
                 },
                 child: ListTile(
-                  title: Text(telefonia.nombre),
+                  title: Text(
+                    telefonia.nombre,
+                    style: GoogleFonts.dosis(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                   subtitle: Text(
-                      'Comision: ${telefonia.comision} - Telf: ${telefonia.telefono}'),
+                    'Comision: ${telefonia.comision} - Telf: ${telefonia.telefono} - Saldo: ${telefonia.saldo}',
+                    style: GoogleFonts.titilliumWeb(
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
               );
             },
