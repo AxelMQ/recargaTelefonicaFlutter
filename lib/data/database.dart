@@ -11,7 +11,7 @@ Future<Database> initializeDB() async {
       );
 
       await database.execute(
-        "CREATE TABLE cliente(id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT NOT NULL)",
+        "CREATE TABLE cliente(id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT NOT NULL, deuda REAL DEFAULT 0.0)",
       );
 
       await database.execute(
@@ -25,14 +25,18 @@ Future<Database> initializeDB() async {
         "CREATE TABLE codigoUSSD(id INTEGER PRIMARY KEY AUTOINCREMENT, codigo TEXT NOT NULL, descripcion TEXT, telefonia_id INTEGER NOT NULL, FOREIGN KEY(telefonia_id) REFERENCES telefonia(id))",
       );
     },
-    version: 2,
-    onUpgrade: (Database db, oldVersion, newVersion) async {
-      if (oldVersion < 2) {
-        
-        await db.execute(
-          "ALTER TABLE recarga ADD COLUMN cliente_id INTEGER NOT NULL",
-        );
-      }
-    },
+    version: 1,
+    // onUpgrade: (Database db, oldVersion, newVersion) async {
+    //   if (oldVersion < 3) {
+    //     await db.execute(
+    //       "ALTER TABLE cliente ADD COLUMN deuda REAL DEFAULT 0.0",
+    //     );
+    //   }
+    // },
   );
+}
+
+Future<void> deleteMyDatabase() async {
+  String path = await getDatabasesPath();
+  await deleteDatabase(join(path, 'recargas.db'));
 }

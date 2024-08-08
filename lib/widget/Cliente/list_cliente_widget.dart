@@ -46,8 +46,7 @@ class ListClienteWidget extends StatelessWidget {
             itemCount: clientes.length,
             itemBuilder: (context, index) {
               final cliente = clientes[index];
-              print(
-                  'Cliente en ListView: ${cliente.nombre}, ID: ${cliente.id}');
+              final deudaColor = cliente.deuda > 0 ? const Color.fromARGB(255, 226, 41, 28) : Colors.black;
               return Dismissible(
                 key: Key(cliente.id.toString()),
                 background: Container(
@@ -129,9 +128,10 @@ class ListClienteWidget extends StatelessWidget {
                     ),
                   ),
                   subtitle: Text(
-                    'ID: ${cliente.id}',
+                    'Deuda (bs): ${cliente.deuda}',
                     style: GoogleFonts.titilliumWeb(
                       fontSize: 15,
+                      color: deudaColor, 
                     ),
                   ),
                   onTap: () async {

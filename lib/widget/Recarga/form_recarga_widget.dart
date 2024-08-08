@@ -68,13 +68,13 @@ class _FormRecargasWidgetState extends State<FormRecargasWidget> {
         _showMessageDialog(
           context,
           'assets/confirm-animation.json',
-          'Telefono registrado exitosamente',
+          'Recarga registrada exitosamente',
         );
       } catch (e) {
         _showMessageDialog(
           context,
           'assets/error-animation.json',
-          'No se logro registrar el telefono: ${e.toString()}',
+          'No se logro registrar la recarga: ${e.toString()}',
         );
       }
 
@@ -85,7 +85,7 @@ class _FormRecargasWidgetState extends State<FormRecargasWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(5.0),
       child: Form(
         key: _formKey,
         child: Column(
@@ -96,9 +96,9 @@ class _FormRecargasWidgetState extends State<FormRecargasWidget> {
                 Text(
                   'Fecha: ${DateFormat('dd/MM/yyyy').format(_selectedDate)}', // Formato de fecha
                   style: GoogleFonts.dosis(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
-                  ),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black38),
                 ),
                 IconButton(
                   icon: const Icon(Icons.calendar_today),
@@ -129,29 +129,35 @@ class _FormRecargasWidgetState extends State<FormRecargasWidget> {
               labelText: 'Tipo de Recarga',
             ),
             const SizedBox(height: 20),
-            SizedBox(
-              width: 110,
-              child: TextForm(
-                text: 'Monto (bs)',
-                keyword: TextInputType.number,
-                controllerForm: montoController,
-                onValidator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Monto es requerido';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Ingrese un monto válido';
-                  }
-                  return null;
-                },
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                  width: 110,
+                  height: 55,
+                  child: TextForm(
+                    text: 'Monto (bs)',
+                    keyword: TextInputType.number,
+                    controllerForm: montoController,
+                    onValidator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Monto es requerido';
+                      }
+                      if (double.tryParse(value) == null) {
+                        return 'Ingrese un monto válido';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                ButtonIconWidget(
+                  onTap: _submitForm,
+                  text: 'Recargar',
+                  icon: Icons.phone_in_talk_rounded,
+                ),
+              ],
             ),
             const SizedBox(height: 15),
-            ButtonIconWidget(
-              onTap: _submitForm,
-              text: 'Recargar',
-              icon: Icons.phone_in_talk_rounded,
-            ),
           ],
         ),
       ),

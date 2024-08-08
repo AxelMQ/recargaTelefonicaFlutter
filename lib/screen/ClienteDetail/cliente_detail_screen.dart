@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:recarga_telefonica_flutter/data/telefono_dao.dart';
 import 'package:recarga_telefonica_flutter/widget/components/floating_button.dart';
+import '../../data/recarga_dao.dart';
 import '../../model/cliente.dart';
+import '../../model/recarga.dart';
 import '../../model/telefono.dart';
+import '../../widget/Cliente/app_bar_cliente.dart';
+import '../../widget/ClienteDetail/header_cliente_detail.dart';
+import '../../widget/ClienteDetail/list_recargas_pendientes_widget.dart';
 import '../../widget/ClienteDetail/list_telefono_cliente_widget.dart';
 import '../../widget/Telefono/form_register_telefono.dart';
 
@@ -21,11 +25,13 @@ class ClienteDetailScreen extends StatefulWidget {
 
 class _ClienteDetailScreenState extends State<ClienteDetailScreen> {
   Future<List<Telefono>>? _telefonosFuture;
+  Future<List<Recarga>>? _recargasPendientesFuture;
 
   @override
   void initState() {
     super.initState();
     _loadTelefonos(widget.cliente.id!);
+    _loadRecargasPendientes(widget.cliente.id!);
   }
 
   void _loadTelefonos(int clienteId) {
@@ -34,33 +40,45 @@ class _ClienteDetailScreenState extends State<ClienteDetailScreen> {
     });
   }
 
+  void _loadRecargasPendientes(int clienteId) {
+    setState(() {
+      _recargasPendientesFuture =
+          RecargaDao().retrieveRecargasPendientesByCliente(clienteId);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.cliente.nombre),
+      appBar: AppBarCliente(
+        text: widget.cliente.nombre,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              '-> ID: ${widget.cliente.id}',
-              style: Theme.of(context).textTheme.headline6,
+            HeaderClienteDetail(
+              cliente: widget.cliente,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Cliente: ${widget.cliente.nombre}',
-              style: GoogleFonts.titilliumWeb(
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-              ),
+            const Divider(
+              height: 30,
+              indent: 15,
+              endIndent: 15,
             ),
-            const SizedBox(height: 15),
-            const Divider(),
             ListTelefonoClienteWidget(
               telefonosFuture: _telefonosFuture,
               onUpdate: () => _loadTelefonos(widget.cliente.id!),
+            ),
+            const Divider(
+              height: 30,
+              indent: 15,
+              endIndent: 15,
+              color: Colors.black,
+            ),
+            ListRecargasPendientesWidget(
+              recargasFuture: _recargasPendientesFuture,
+              onUpdate: () => _loadRecargasPendientes(widget.cliente.id!),
             ),
           ],
         ),

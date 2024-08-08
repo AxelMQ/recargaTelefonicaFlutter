@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recarga_telefonica_flutter/screen/RecargaReporte/recarga_reporte_screen.dart';
 
+import '../../screen/Cliente/cliente_screen.dart';
+import '../../screen/Telefonia/telefonia_screen.dart';
+
 class MenuDrawerWidget extends StatelessWidget {
   const MenuDrawerWidget({
     super.key,
@@ -42,15 +45,10 @@ class MenuDrawerWidget extends StatelessWidget {
               Navigator.pop(context); // Cierra el drawer
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.app_registration_rounded),
-            title: Text(
-              'Historial Recargas',
-              style: GoogleFonts.titilliumWeb(
-                  fontSize: 17, fontWeight: FontWeight.w300),
-            ),
+          ListTileButon(
+            text: 'Historial Recargas',
+            icon: Icons.app_registration_rounded,
             onTap: () {
-              Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -58,10 +56,68 @@ class MenuDrawerWidget extends StatelessWidget {
                 ),
               );
             },
-          )
+          ),
+          ListTileButon(
+            text: 'Telefonias',
+            icon: Icons.add_ic_call,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TelefoniaScreen(),
+                ),
+              );
+            },
+          ),
+          ListTileButon(
+            text: 'Clientes',
+            icon: Icons.person_add_alt_1_rounded,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ClienteScreen(),
+                ),
+              );
+            },
+          ),
           // Añade más elementos según sea necesario
         ],
       ),
+    );
+  }
+}
+
+class ListTileButon extends StatelessWidget {
+  const ListTileButon({
+    super.key,
+    required this.text,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String text;
+  final IconData icon;
+  final void Function() onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: const Color.fromARGB(255, 32, 97, 151),
+        size: 30.0,
+      ),
+      title: Text(
+        text,
+        style: GoogleFonts.titilliumWeb(
+          fontSize: 17,
+          fontWeight: FontWeight.w300,
+          color: Colors.black,
+          letterSpacing: 0.5,
+        ),
+      ),
+      onTap: onTap,
     );
   }
 }

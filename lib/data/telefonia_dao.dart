@@ -32,4 +32,31 @@ class TelefoniaDao {
       whereArgs: [id],
     );
   }
+
+  Future<void> increaseSaldo(int id, double amount) async {
+    final Database db = await initializeDB();
+
+    await db.transaction((txn) async {
+      // Obtén el saldo actual de la telefonía
+      final List<Map<String, dynamic>> result = await txn.rawQuery('''
+      SELECT saldo
+      FROM telefonia
+      WHERE id = ?
+    ''', [id]);
+
+      final saldoActual =
+          result.isNotEmpty ? result.first['saldo'] as double : 0.0;
+
+      // Calcula el nuevo saldo
+      final nuevoSaldo = saldoActual + amount;
+
+      // Actualiza el saldo de la telefonía
+      await txn.update(
+        'telefonia',
+        {'saldo': nuevoSaldo},
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    });
+  }
 }

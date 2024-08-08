@@ -5,8 +5,11 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   @override
   final Size preferredSize;
 
-  const AppBarWidget({Key? key})
-      : preferredSize = const Size.fromHeight(60.0),
+  final VoidCallback onRefresh;
+  const AppBarWidget({
+    Key? key,
+    required this.onRefresh,
+  })  : preferredSize = const Size.fromHeight(60.0),
         super(key: key);
 
   @override
@@ -21,29 +24,22 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(22),
+          bottomRight: Radius.circular(22),
+        ),
       ),
       child: AppBar(
         title: Text(
           'Recargas Telefonicas',
           style: GoogleFonts.dosis(
             fontSize: 25,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
             color: Colors.white,
           ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 4,
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.more_vert,
-              color: Colors.white70,
-            ),
-            onPressed: () {
-              // Acción del botón de menú
-            },
-          ),
-        ],
         leading: IconButton(
           icon: const Icon(Icons.menu, color: Colors.white70),
           onPressed: () {
@@ -51,8 +47,13 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             Scaffold.of(context).openDrawer();
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh_outlined, color: Colors.white,),
+            onPressed: onRefresh,
+          ),
+        ],
       ),
-      
     );
   }
 }

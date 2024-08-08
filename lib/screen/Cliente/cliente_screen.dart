@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recarga_telefonica_flutter/screen/Cliente/cliente_register_screen.dart';
 import 'package:recarga_telefonica_flutter/widget/components/floating_button.dart';
+import '../../widget/Cliente/app_bar_cliente.dart';
 import '../../widget/Cliente/list_cliente_widget.dart';
 import '../../model/cliente.dart';
 import '../../data/cliente_dao.dart';
@@ -30,15 +31,17 @@ class _ClienteScreenState extends State<ClienteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Clientes'),
-      ),
-      body: ListClienteWidget(
-        clientesFuture: _clientesFuture!,
-        onUpdate: _loadClientes,
+      appBar: const AppBarCliente(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListClienteWidget(
+          clientesFuture: _clientesFuture!,
+          onUpdate: _loadClientes,
+        ),
       ),
       floatingActionButton: FloatingButton(
         text: 'Agregar Cliente.',
+        icon: Icons.person_add_alt_rounded,
         onTap: () async {
           final result = await Navigator.push(
             context,

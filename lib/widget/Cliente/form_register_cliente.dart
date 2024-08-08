@@ -33,7 +33,7 @@ class _FormRegisterClienteState extends State<FormRegisterCliente> {
             controllerForm: nombreController,
             onValidator: (p0) => p0!.isEmpty ? 'Campo requerido' : null,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           ButtonIconWidget(
             onTap: () async {
               if (_formKey.currentState!.validate()) {

@@ -1,26 +1,29 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:recarga_telefonica_flutter/data/telefono_dao.dart';
-import '../../model/telefono.dart';
-import '../Telefono/form_edit_telefono.dart';
-import '../components/alert_dialog_widget.dart';
-import '../components/confirm_alert_dialog.dart';
+import 'package:recarga_telefonica_flutter/data/codigo_ussd_dao.dart';
+import '../../model/codigoussd.dart';
+import '../../widget/TelefoniaDetail/form_edit_codigoussd.dart';
+import '../../widget/components/alert_dialog_widget.dart';
+import '../../widget/components/confirm_alert_dialog.dart';
 
-class ListTelefonoClienteWidget extends StatelessWidget {
-  const ListTelefonoClienteWidget({
+class ListCodigoUSSDWidget extends StatelessWidget {
+  const ListCodigoUSSDWidget({
     super.key,
-    required Future<List<Telefono>>? telefonosFuture,
+    required Future<List<CodigoUSSD>>? codigosUSSDFuture,
     required this.onUpdate,
-  }) : _telefonosFuture = telefonosFuture;
+  }) : _codigosUSSDFuture = codigosUSSDFuture;
 
-  final Future<List<Telefono>>? _telefonosFuture;
+  final Future<List<CodigoUSSD>>? _codigosUSSDFuture;
   final VoidCallback onUpdate;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Telefono>>(
-      future: _telefonosFuture,
-      builder: (BuildContext context, AsyncSnapshot<List<Telefono>> snapshot) {
+    return FutureBuilder<List<CodigoUSSD>>(
+      future: _codigosUSSDFuture,
+      builder:
+          (BuildContext context, AsyncSnapshot<List<CodigoUSSD>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -35,20 +38,19 @@ class ListTelefonoClienteWidget extends StatelessWidget {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(
             child: Text(
-              'No se encontraron Telefonos registrados.',
+              'No hay códigos USSD.',
               style: GoogleFonts.dosis(fontSize: 17),
             ),
           );
         } else {
-          final telefonos = snapshot.data!;
-          return SizedBox(
-            height: 205,
+          final codigosUSSD = snapshot.data!;
+          return Expanded(
             child: ListView.builder(
-              itemCount: telefonos.length,
+              itemCount: codigosUSSD.length,
               itemBuilder: (context, index) {
-                final telefono = telefonos[index];
+                final codigoUSSD = codigosUSSD[index];
                 return Dismissible(
-                  key: Key(telefono.id.toString()),
+                  key: Key(codigoUSSD.id.toString()),
                   background: Container(
                     color: Colors.red,
                     child: const Align(
@@ -77,61 +79,70 @@ class ListTelefonoClienteWidget extends StatelessWidget {
                   ),
                   confirmDismiss: (direction) async {
                     if (direction == DismissDirection.startToEnd) {
-                      //eliminar telefono
+                      // Confirmar eliminación
                       final confirm = await _showConfirmationDialog(context);
                       if (confirm) {
-                        try {
-                          await TelefonoDao()
-                              .deleteTelefono(telefono.id!.toInt());
-
-                          // ignore: use_build_context_synchronously
-                          _showMessageDialog(
-                            context,
-                            'assets/confirm-animation.json',
-                            'Telefono eliminado exitosamente',
-                          );
-                          return true;
-                        } catch (e) {
-                          // ignore: use_build_context_synchronously
+                        if (codigoUSSD.id != null) {
+                          try {
+                            await CodigoUSSDDao()
+                                .deleteCodigoUSSD(codigoUSSD.id!);
+                            _showMessageDialog(
+                              context,
+                              'assets/confirm-animation.json',
+                              'Codigo USSD eliminado exitosamente',
+                            );
+                            return true;
+                          } catch (e) {
+                            _showMessageDialog(
+                              context,
+                              'assets/error-animation.json',
+                              'No se logró eliminar el Codigo USSD: ${e.toString()}',
+                            );
+                            return false;
+                          }
+                        } else {
                           _showMessageDialog(
                             context,
                             'assets/error-animation.json',
-                            'No se logro elimnar al Telefeno: ${e.toString()}',
+                            'ID del Codigo USSD es nulo',
                           );
                           return false;
                         }
                       } else {
-                        false;
+                        return false;
                       }
                     } else if (direction == DismissDirection.endToStart) {
-                      //update cliente
+                      // Manejar la edición
                       final result = await showModalBottomSheet<bool>(
                         context: context,
                         isScrollControlled: true,
                         builder: (BuildContext context) {
-                          return FormEditTelefono(
-                            telefono: telefono,
+                          return FormEditCodigoUSSD(
+                            codigoUSSD: codigoUSSD,
                           );
                         },
                       );
                       if (result == true) {
                         onUpdate();
                       }
+                      return false;
                     }
+                    
                     return false;
                   },
                   child: ListTile(
                     title: Text(
-                      telefono.numero.toString(),
+                      codigoUSSD.codigo,
                       style: GoogleFonts.dosis(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     subtitle: Text(
-                      telefono.telefonia!.nombre,
+                      codigoUSSD.descripcion!,
                       style: GoogleFonts.titilliumWeb(
-                        fontSize: 15,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
                       ),
                     ),
                   ),
@@ -150,7 +161,7 @@ class ListTelefonoClienteWidget extends StatelessWidget {
           builder: (BuildContext context) {
             return const AlertDialogWidget(
               title: 'Confirmar',
-              content: 'Estas seguro de que quieres eliminar este Telefono?',
+              content: 'Estas seguro de que quieres el codigo USSD?',
               cancel: 'Cancelar',
               confirm: 'Eliminar',
             );

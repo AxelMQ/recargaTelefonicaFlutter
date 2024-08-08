@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widget/Cliente/app_bar_cliente.dart';
 import '../../widget/Cliente/form_register_cliente.dart';
 import '../../widget/components/title_animation_widget.dart';
 
@@ -8,8 +9,8 @@ class ClienteRegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Clientes'),
+      appBar: const AppBarCliente(
+        text: '',
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -19,7 +20,13 @@ class ClienteRegisterScreen extends StatelessWidget {
               text: 'REGISTRAR CLIENTE',
               img: 'assets/form-animation.json',
             ),
-            SizedBox(height: 30),
+            Divider(
+              height: 55,
+              indent: 15,
+              endIndent: 15,
+              color: Colors.black26,
+            ),
+            // SizedBox(height: 35),
             FormRegisterCliente(),
           ],
         ),

@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:recarga_telefonica_flutter/screen/home_screen.dart';
 
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main(){
+//  await deleteMyDatabase();
+
   runApp(const MyApp());
 }
+
+// void main(){
+//   runApp(const MyApp());
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

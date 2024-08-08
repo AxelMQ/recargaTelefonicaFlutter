@@ -54,9 +54,8 @@ class _SearchTelefonoWidgetState extends State<SearchTelefonoWidget> {
           icon: Icons.phone_android_rounded,
           controller: _phoneController,
         ),
-        const SizedBox(height: 20),
-        SizedBox(
-          height: 200,
+        const SizedBox(height: 15),
+        Expanded(
           child: ListView.builder(
             itemCount: _searchResults.length,
             itemBuilder: (context, index) {
@@ -70,32 +69,43 @@ class _SearchTelefonoWidgetState extends State<SearchTelefonoWidget> {
                   .where((item) => item.isNotEmpty) // Filtra elementos vacíos
                   .join(' - '); // Une los elementos con guion
 
-              return ListTile(
-                title: Text(
-                  telefono.numero.toString(),
-                  style: GoogleFonts.titilliumWeb(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20,
-                  ),
+              return Card(
+                margin:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                subtitle: Text(
-                  subtitle,
-                  style: GoogleFonts.dosis(
-                    fontWeight: FontWeight.w300,
-                    fontSize: 17,
-                  ),
-                ),
-                onTap: () {
-                  // print(telefono.cliente!.nombre);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RecargaScreen(
-                        telefono: telefono,
-                      ),
+                color: const Color.fromARGB(255, 241, 252, 236),
+                child: ListTile(
+                  title: Text(
+                    telefono.numero.toString(),
+                    style: GoogleFonts.titilliumWeb(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20,
+                      color: Colors.blueGrey[800],
                     ),
-                  );
-                },
+                  ),
+                  subtitle: Text(
+                    subtitle,
+                    style: GoogleFonts.dosis(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 17,
+                      color: Colors.blueGrey[600],
+                    ),
+                  ),
+                  onTap: () {
+                    // print(telefono.cliente!.nombre);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RecargaScreen(
+                          telefono: telefono,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               );
             },
           ),

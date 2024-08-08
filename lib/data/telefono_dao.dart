@@ -130,7 +130,9 @@ class TelefonoDao {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> queryResult = await db.rawQuery(
       '''
-      SELECT t.*, c.id AS cliente_id, c.nombre AS cliente_nombre, tel.*
+      SELECT t.id AS telefono_id, t.numero, t.telefonia_id, t.cliente_id,
+       c.id AS cliente_id, c.nombre AS cliente_nombre,
+       tel.id AS telefonia_id, tel.nombre, tel.comision, tel.saldo
       FROM telefono t
       JOIN cliente c ON t.cliente_id = c.id
       JOIN telefonia tel ON t.telefonia_id = tel.id
@@ -139,14 +141,19 @@ class TelefonoDao {
       ['%$searchTerm%'],
     );
 
-    // // Depura los resultados
-    // for (var map in queryResult) {
-    //   print(map);
-    // }
+    // Depura los resultados
+    for (var map in queryResult) {
+      print(map);
+    }
 
     // Mapea los resultados para crear objetos Telefono y asociar datos
     return queryResult.map((map) {
-      final telefono = Telefono.fromMap(map);
+      final telefono = Telefono.fromMap({
+        'id': map['telefono_id'] as int?,
+        'numero': map['numero'] as int,
+        'telefonia_id': map['telefonia_id'] as int,
+        'cliente_id': map['cliente_id'] as int,
+      });
       final cliente = Cliente.fromMap({
         'id': map['cliente_id'] as int?,
         'nombre': map['cliente_nombre'] as String? ?? '',
