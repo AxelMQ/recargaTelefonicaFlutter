@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recarga_telefonica_flutter/data/telefonia_dao.dart';
-import 'package:recarga_telefonica_flutter/screen/TelefoniaDetail/telefonia_detail_screen.dart';
 import 'package:recarga_telefonica_flutter/widget/Telefonia/form_edit_telefonia.dart';
 import '../../model/telefonia.dart';
 import '../components/alert_dialog_widget.dart';
 import '../components/confirm_alert_dialog.dart';
+import 'list_tile_telefonia_widget.dart';
 
 class ListTelefoniaWidget extends StatelessWidget {
   const ListTelefoniaWidget({
@@ -114,30 +114,8 @@ class ListTelefoniaWidget extends StatelessWidget {
                   }
                   return false;
                 },
-                child: ListTile(
-                  title: Text(
-                    telefonia.nombre,
-                    style: GoogleFonts.dosis(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'Comision: ${telefonia.comision} %\n'
-                    'Teléfono: ${telefonia.telefono} \n',
-                    style: GoogleFonts.titilliumWeb(
-                        fontSize: 15, fontWeight: FontWeight.w300),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TelefoniaDetailScreen(
-                          telefonia: telefonia,
-                        ),
-                      ),
-                    );
-                  },
+                child: ListTileTelefoniaWidget(
+                  telefonia: telefonia,
                 ),
               );
             },

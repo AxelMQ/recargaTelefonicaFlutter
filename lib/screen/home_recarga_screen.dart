@@ -42,7 +42,7 @@ class _HomeRecargaScreenState extends State<HomeRecargaScreen> {
       ),
       floatingActionButton: FloatingButton(
         text: 'Agregar Cliente',
-        icon: Icons.person_add_alt_1_rounded,
+        icon: Icons.person,
         onTap: () {
           Navigator.push(
             context,
