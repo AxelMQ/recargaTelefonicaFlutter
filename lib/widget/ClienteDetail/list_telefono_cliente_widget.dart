@@ -5,6 +5,7 @@ import '../../model/telefono.dart';
 import '../Telefono/form_edit_telefono.dart';
 import '../components/alert_dialog_widget.dart';
 import '../components/confirm_alert_dialog.dart';
+import 'list_tile_telefono_widget.dart';
 
 class ListTelefonoClienteWidget extends StatelessWidget {
   const ListTelefonoClienteWidget({
@@ -120,21 +121,7 @@ class ListTelefonoClienteWidget extends StatelessWidget {
                     }
                     return false;
                   },
-                  child: ListTile(
-                    title: Text(
-                      telefono.numero.toString(),
-                      style: GoogleFonts.dosis(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    subtitle: Text(
-                      telefono.telefonia!.nombre,
-                      style: GoogleFonts.titilliumWeb(
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
+                  child: ListTileTelefonoWidget(telefono: telefono),
                 );
               },
             ),
