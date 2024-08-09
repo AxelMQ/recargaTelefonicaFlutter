@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
+import 'package:recarga_telefonica_flutter/widget/components/button_icon.dart';
 import '../../data/recarga_dao.dart';
 import '../../model/recarga.dart';
 import '../../widget/Cliente/app_bar_cliente.dart';
+import '../../widget/RecargaReporte/list_reporte_recarga.dart';
 
 class RecargaReporteScreen extends StatefulWidget {
   const RecargaReporteScreen({super.key});
@@ -14,6 +14,7 @@ class RecargaReporteScreen extends StatefulWidget {
 
 class _RecargaReporteScreenState extends State<RecargaReporteScreen> {
   Future<List<Recarga>>? _recargasFuture;
+  String _filter = 'todo';
 
   @override
   void initState() {
@@ -21,9 +22,10 @@ class _RecargaReporteScreenState extends State<RecargaReporteScreen> {
     _loadRecargas();
   }
 
-  void _loadRecargas() {
+  void _loadRecargas({String filter = 'todo'}) {
     setState(() {
-      _recargasFuture = RecargaDao().retrieveRecargas();
+      _filter = filter;
+      _recargasFuture = RecargaDao().retrieveRecargas(filter: filter);
     });
   }
 
@@ -32,54 +34,56 @@ class _RecargaReporteScreenState extends State<RecargaReporteScreen> {
     // print(_recargasFuture);
     return Scaffold(
       appBar: const AppBarCliente(
-        text: 'Reporte Recargas',
+        text: 'Historial Recargas',
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: FutureBuilder<List<Recarga>>(
-          future: _recargasFuture,
-          builder: (context, AsyncSnapshot<List<Recarga>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text(
-                  'Error: ${snapshot.error}',
-                  style: GoogleFonts.dosis(fontSize: 17),
-                ),
-              );
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(
-                child: Text(
-                  'No se encontraron recargas disponibles.',
-                  style: GoogleFonts.dosis(fontSize: 17),
-                ),
-              );
-            } else {
-              final recargas = snapshot.data!;
-              return ListView.builder(
-                itemCount: recargas.length,
-                itemBuilder: (context, index) {
-                  final recarga = recargas[index];
-                  return ListTile(
-                    title: Text('Monto: ${recarga.monto} bs.'),
-                    subtitle: Text(
-                      'Fecha: ${DateFormat('dd/MM/yyyy').format(recarga.fecha)}\n'
-                      'Estado: ${recarga.estado}\n'
-                      'Tipo de Recarga: ${recarga.tipoRecarga}\n'
-                      'Teléfono: ${recarga.telefono?.numero}\n'
-                      'Cliente: ${recarga.cliente?.nombre}\n'
-                      'Telefonía: ${recarga.telefonia?.nombre}',
-                      style: GoogleFonts.titilliumWeb(),
-                    ),
-                  );
-                },
-              );
-            }
-          },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _filterButton('Todo', Icons.all_inclusive, 'todo'),
+                _filterButton('Pendiente', Icons.pending, 'Pendiente'),
+                _filterButton('Pagado', Icons.check_circle, 'Pagado'),
+              ],
+            ),
+            const Divider(
+              height: 25,
+              indent: 15,
+              endIndent: 15,
+            ),
+            Expanded(
+              child: ListReporteRecargaWidget(
+                recargasFuture: _recargasFuture,
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _filterButton(String text, IconData icon, String filterValue) {
+    final isSelected = _filter == filterValue;
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: isSelected ? Colors.white : Colors.black,
+        backgroundColor:
+            isSelected ? Colors.blue : Colors.grey[300], // Color del texto
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      ),
+      onPressed: () => _loadRecargas(filter: filterValue),
+      child: Row(
+        children: [
+          Icon(icon, color: isSelected ? Colors.white : Colors.black),
+          const SizedBox(width: 8.0),
+          Text(text),
+        ],
       ),
     );
   }

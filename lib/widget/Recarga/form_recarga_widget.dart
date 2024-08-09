@@ -59,6 +59,7 @@ class _FormRecargasWidgetState extends State<FormRecargasWidget> {
         tipoRecarga: _tipoRecargaSeleccionado!,
         telefonoId: widget.telefono.id!,
         clienteId: widget.telefono.clienteId,
+        telefonia: widget.telefono.telefonia,
       );
 
       try {

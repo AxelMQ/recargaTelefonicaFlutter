@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
+class AppBarCobro extends StatelessWidget implements PreferredSizeWidget {
   @override
   final Size preferredSize;
 
-  final VoidCallback onRefresh;
-  const AppBarWidget({
-    Key? key,
-    required this.onRefresh,
-  })  : preferredSize = const Size.fromHeight(60.0),
+  const AppBarCobro({Key? key, this.text})
+      : preferredSize = const Size.fromHeight(60.0),
         super(key: key);
+
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +30,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       ),
       child: AppBar(
         title: Text(
-          'Recargas Telefonicas',
+          text ?? 'Cobro',
           style: GoogleFonts.dosis(
-            fontSize: 25,
-            fontWeight: FontWeight.w600,
+            fontSize: 26,
+            fontWeight: FontWeight.w500,
             color: Colors.white,
           ),
         ),
@@ -43,16 +42,9 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         leading: IconButton(
           icon: const Icon(Icons.menu, color: Colors.white70),
           onPressed: () {
-            // Acción del botón de menú (izquierda)
             Scaffold.of(context).openDrawer();
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh_outlined, color: Colors.white,),
-            onPressed: onRefresh,
-          ),
-        ],
       ),
     );
   }

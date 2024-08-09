@@ -6,11 +6,11 @@ import '../model/telefonia.dart';
 import '../model/telefono.dart';
 
 class RecargaDao {
-  Future<List<Recarga>> retrieveRecargas() async {
+  Future<List<Recarga>> retrieveRecargas({String filter = 'todo'}) async {
     final Database db = await initializeDB();
 
     // Consulta con JOIN para obtener los datos relacionados
-    final List<Map<String, dynamic>> queryResult = await db.rawQuery('''
+    String query = ('''
       SELECT r.*, t.numero AS telefono_numero, c.nombre AS cliente_nombre, 
              tel.nombre AS telefonia_nombre, tel.comision AS telefonia_comision
       FROM recarga r
@@ -19,6 +19,17 @@ class RecargaDao {
       JOIN telefonia tel ON t.telefonia_id = tel.id
     ''');
 
+    // Añadir una cláusula WHERE si el filtro no es 'todo'
+    if (filter != 'todo') {
+      query += ' WHERE r.estado = ?';
+    }
+
+    // Ejecutar la consulta
+    final List<Map<String, dynamic>> queryResult = await db.rawQuery(
+      query,
+      filter != 'todo' ? [filter] : null,
+    );
+    
     // Asocia los datos recuperados a cada recarga
     return queryResult.map((map) {
       final telefono = Telefono(
@@ -61,7 +72,8 @@ class RecargaDao {
       );
 
       // Actualiza el saldo de la telefonía
-      await updateSaldoInTransaction(txn, recarga.telefonoId, recarga.monto);
+      await updateSaldoInTransaction(
+          txn, recarga.telefonia!.id!.toInt(), recarga.monto);
 
       // Actualiza la deuda del cliente solo si el estado de la recarga es "Pendiente"
       if (recarga.estado == 'Pendiente') {
@@ -135,7 +147,7 @@ class RecargaDao {
     ''', [clienteId]);
 
     // Imprime los resultados de la consulta para depuración
-    print("retrieveRecargasPendientesByCliente result: $queryResult");
+    // print("retrieveRecargasPendientesByCliente result: $queryResult");
     // Asocia los datos recuperados a cada recarga
     return queryResult.map((map) {
       final telefono = Telefono(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recarga_telefonica_flutter/screen/Cliente/cliente_register_screen.dart';
 import 'package:recarga_telefonica_flutter/widget/components/floating_button.dart';
+import 'package:recarga_telefonica_flutter/widget/components/text_icon_form.dart';
 import '../../widget/Cliente/app_bar_cliente.dart';
 import '../../widget/Cliente/list_cliente_widget.dart';
 import '../../model/cliente.dart';
@@ -14,18 +15,59 @@ class ClienteScreen extends StatefulWidget {
 }
 
 class _ClienteScreenState extends State<ClienteScreen> {
-  Future<List<Cliente>>? _clientesFuture;
+  // Future<List<Cliente>>? _clientesFuture;
+  List<Cliente> _clientes = [];
+  bool _isLoadingMore = false;
+  final TextEditingController _searchController = TextEditingController();
+  int _offset = 0;
+  final int _limit = 8;
 
   @override
   void initState() {
     super.initState();
     _loadClientes();
+    _searchController.addListener(_searchClientes);
   }
 
-  void _loadClientes() {
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _loadClientes({String query = '', bool isLoadMore = false}) async {
+    if (_isLoadingMore && isLoadMore) return;
+
     setState(() {
-      _clientesFuture = ClienteDao().retrieveCliente();
+      if (!isLoadMore) {
+        _offset = 0;
+        _clientes = [];
+      }
+      _isLoadingMore = true;
     });
+
+    try {
+      final newClientes = await ClienteDao()
+          .searchClientes(query, limit: _limit, offset: _offset);
+
+      setState(() {
+        _isLoadingMore = false;
+        if (newClientes.isEmpty) {
+          _offset -= _limit; 
+        } else {
+          _clientes.addAll(newClientes);
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingMore = false;
+      });
+    }
+  }
+
+  void _searchClientes() {
+    final query = _searchController.text;
+    _loadClientes(query: query);
   }
 
   @override
@@ -33,10 +75,40 @@ class _ClienteScreenState extends State<ClienteScreen> {
     return Scaffold(
       appBar: const AppBarCliente(),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListClienteWidget(
-          clientesFuture: _clientesFuture!,
-          onUpdate: _loadClientes,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextIconForm(
+              text: 'Buscar Cliente',
+              icon: Icons.search,
+              keyword: TextInputType.text,
+              textCapitalization: TextCapitalization.words,
+              controller: _searchController,
+            ),
+            const Divider(
+              height: 35,
+              thickness: 1.6,
+            ),
+            Expanded(
+              child: ListClienteWidget(
+                clientes: _clientes,
+                onUpdate: _loadClientes,
+                isLoadingMore: _isLoadingMore,
+                onLoadMore: () {
+                  if (!_isLoadingMore) {
+                    setState(() {
+                      _offset += _limit;
+                      _loadClientes(
+                        query: _searchController.text,
+                        isLoadMore: true,
+                      );
+                    });
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingButton(

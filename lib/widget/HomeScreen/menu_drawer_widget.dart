@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recarga_telefonica_flutter/screen/RecargaReporte/recarga_reporte_screen.dart';
-
 import '../../screen/Cliente/cliente_screen.dart';
 import '../../screen/Telefonia/telefonia_screen.dart';
 
@@ -29,34 +28,14 @@ class MenuDrawerWidget extends StatelessWidget {
               ),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Inicio'),
-            onTap: () {
-              // Acción cuando se selecciona el elemento
-              Navigator.pop(context); // Cierra el drawer
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Configuración'),
-            onTap: () {
-              // Acción cuando se selecciona el elemento
-              Navigator.pop(context); // Cierra el drawer
-            },
-          ),
           ListTileButon(
-            text: 'Historial Recargas',
-            icon: Icons.app_registration_rounded,
+            icon: Icons.home,
+            text: 'Inicio',
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const RecargaReporteScreen(),
-                ),
-              );
+              Navigator.pop(context);
             },
           ),
+          const Divider(),
           ListTileButon(
             text: 'Telefonias',
             icon: Icons.add_ic_call,
@@ -81,7 +60,19 @@ class MenuDrawerWidget extends StatelessWidget {
               );
             },
           ),
-          // Añade más elementos según sea necesario
+          const Divider(),
+          ListTileButon(
+            text: 'Historial Recargas',
+            icon: Icons.app_registration_rounded,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RecargaReporteScreen(),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

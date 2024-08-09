@@ -6,18 +6,23 @@ class TextIconForm extends StatelessWidget {
     super.key,
     required this.text,
     required this.icon,
-    required this.controller,
+    this.controller,
+    this.keyword,
+    this.textCapitalization = TextCapitalization.none,
   });
 
   final String text;
   final IconData icon;
-  final TextEditingController controller;
+  final TextEditingController? controller;
+  final TextInputType? keyword;
+  final TextCapitalization textCapitalization;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      keyboardType: TextInputType.phone,
+      keyboardType: keyword ?? TextInputType.phone,
+      textCapitalization: textCapitalization,
       style: GoogleFonts.dosis(fontWeight: FontWeight.w600),
       decoration: InputDecoration(
         labelText: text,
@@ -27,14 +32,16 @@ class TextIconForm extends StatelessWidget {
           color: Colors.black87,
         ),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0,),
+          borderRadius: BorderRadius.circular(
+            8.0,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             color: Color.fromARGB(255, 82, 123, 196),
             width: 1.5,
           ),
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         prefixIcon: Icon(
           icon,
