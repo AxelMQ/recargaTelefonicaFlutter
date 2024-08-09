@@ -20,7 +20,7 @@ class _ClienteScreenState extends State<ClienteScreen> {
   bool _isLoadingMore = false;
   final TextEditingController _searchController = TextEditingController();
   int _offset = 0;
-  final int _limit = 8;
+  final int _limit = 9;
 
   @override
   void initState() {

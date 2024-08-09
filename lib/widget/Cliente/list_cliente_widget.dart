@@ -6,6 +6,7 @@ import '../../screen/ClienteDetail/cliente_detail_screen.dart';
 import '../components/alert_dialog_widget.dart';
 import '../components/confirm_alert_dialog.dart';
 import 'form_edit_cliente.dart';
+import 'list_tile_cliente_widget.dart';
 
 class ListClienteWidget extends StatelessWidget {
   const ListClienteWidget({
@@ -115,31 +116,9 @@ class ListClienteWidget extends StatelessWidget {
               }
               return false;
             },
-            child: ListTile(
-              title: Text(
-                cliente.nombre,
-                style: GoogleFonts.dosis(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              subtitle: Text(
-                'Deuda (bs): ${cliente.deuda}',
-                style: GoogleFonts.titilliumWeb(
-                  fontSize: 15,
-                  color: deudaColor,
-                ),
-              ),
-              onTap: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ClienteDetailScreen(
-                      cliente: cliente,
-                    ),
-                  ),
-                );
-              },
+            child: ListTileClienteWidget(
+              cliente: cliente,
+              deudaColor: deudaColor,
             ),
           );
         },
