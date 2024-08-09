@@ -11,6 +11,7 @@ class ClienteDao {
       whereArgs: ['%$query%'],
       limit: limit,
       offset: offset,
+      orderBy: 'nombre ASC'
     );
     return result.map((json) => Cliente.fromMap(json)).toList();
   }

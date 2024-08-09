@@ -6,7 +6,8 @@ import '../model/telefonia.dart';
 import '../model/telefono.dart';
 
 class RecargaDao {
-  Future<List<Recarga>> retrieveRecargas({String filter = 'todo'}) async {
+  Future<List<Recarga>> retrieveRecargas(
+      {String filter = 'todo', int limit = 5, int offset = 0}) async {
     final Database db = await initializeDB();
 
     // Consulta con JOIN para obtener los datos relacionados
@@ -23,13 +24,16 @@ class RecargaDao {
     if (filter != 'todo') {
       query += ' WHERE r.estado = ?';
     }
+    
+    // Ordenar por fecha en orden descendente y añadir LIMIT y OFFSET
+    query += ' ORDER BY r.fecha DESC LIMIT ? OFFSET ?';
 
     // Ejecutar la consulta
     final List<Map<String, dynamic>> queryResult = await db.rawQuery(
       query,
-      filter != 'todo' ? [filter] : null,
+      filter != 'todo' ? [filter, limit, offset] : [limit, offset],
     );
-    
+
     // Asocia los datos recuperados a cada recarga
     return queryResult.map((map) {
       final telefono = Telefono(

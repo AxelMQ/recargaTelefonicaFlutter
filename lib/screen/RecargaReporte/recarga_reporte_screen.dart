@@ -1,5 +1,5 @@
+// ignore_for_file: unused_field
 import 'package:flutter/material.dart';
-import 'package:recarga_telefonica_flutter/widget/components/button_icon.dart';
 import '../../data/recarga_dao.dart';
 import '../../model/recarga.dart';
 import '../../widget/Cliente/app_bar_cliente.dart';
@@ -14,7 +14,11 @@ class RecargaReporteScreen extends StatefulWidget {
 
 class _RecargaReporteScreenState extends State<RecargaReporteScreen> {
   Future<List<Recarga>>? _recargasFuture;
+  List<Recarga> _recargas = [];
+  bool _isLoadingMore = false;
   String _filter = 'todo';
+  int _offset = 0;
+  final int _limit = 5;
 
   @override
   void initState() {
@@ -22,16 +26,43 @@ class _RecargaReporteScreenState extends State<RecargaReporteScreen> {
     _loadRecargas();
   }
 
-  void _loadRecargas({String filter = 'todo'}) {
+  void _loadRecargas({String filter = 'todo', bool isLoadMore = false}) {
+    if (_isLoadingMore && isLoadMore) return;
+
     setState(() {
-      _filter = filter;
-      _recargasFuture = RecargaDao().retrieveRecargas(filter: filter);
+      if (!isLoadMore) {
+        _offset = 0;
+        _recargas = [];
+      }
+      _isLoadingMore = true;
+      _recargasFuture = RecargaDao()
+          .retrieveRecargas(
+        filter: filter,
+        limit: _limit,
+        offset: _offset,
+      )
+          .then((recargas) {
+        setState(() {
+          _isLoadingMore = false;
+          if (recargas.isNotEmpty) {
+            _recargas.addAll(recargas);
+            _offset += _limit;
+          }
+        });
+        return _recargas;
+      });
     });
+  }
+
+  void _onFilterSelected(String filterValue) {
+    setState(() {
+      _filter = filterValue;
+    });
+    _loadRecargas(filter: filterValue);
   }
 
   @override
   Widget build(BuildContext context) {
-    // print(_recargasFuture);
     return Scaffold(
       appBar: const AppBarCliente(
         text: 'Historial Recargas',
@@ -56,7 +87,12 @@ class _RecargaReporteScreenState extends State<RecargaReporteScreen> {
             ),
             Expanded(
               child: ListReporteRecargaWidget(
-                recargasFuture: _recargasFuture,
+                recargas: _recargas,
+                onLoadMore: () {
+                  if (!_isLoadingMore) {
+                    _loadRecargas(filter: _filter, isLoadMore: true);
+                  }
+                },
               ),
             ),
           ],
@@ -77,7 +113,7 @@ class _RecargaReporteScreenState extends State<RecargaReporteScreen> {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
       ),
-      onPressed: () => _loadRecargas(filter: filterValue),
+      onPressed: () => _onFilterSelected(filterValue),
       child: Row(
         children: [
           Icon(icon, color: isSelected ? Colors.white : Colors.black),
