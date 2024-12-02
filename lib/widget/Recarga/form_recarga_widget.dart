@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:recarga_telefonica_flutter/screen/Recarga/recarga_exitosa_screen.dart';
 import '../../data/recarga_dao.dart';
 import '../../model/recarga.dart';
 import '../../model/telefono.dart';
@@ -60,12 +60,18 @@ class _FormRecargasWidgetState extends State<FormRecargasWidget> {
         telefonoId: widget.telefono.id!,
         clienteId: widget.telefono.clienteId,
         telefonia: widget.telefono.telefonia,
+        telefono: widget.telefono
       );
 
       try {
         final recargaDao = RecargaDao();
         await recargaDao.insertRecarga(recarga);
-        Navigator.pop(context);
+        // Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RecargaExitosaScreen(recarga: recarga)),
+        );
+
         _showMessageDialog(
           context,
           'assets/confirm-animation.json',
