@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recarga_telefonica_flutter/data/telefono_dao.dart';
 import 'package:recarga_telefonica_flutter/data/telefonia_dao.dart';
-import 'package:recarga_telefonica_flutter/model/cliente.dart';
 import 'package:recarga_telefonica_flutter/model/telefonia.dart';
 import 'package:recarga_telefonica_flutter/model/telefono.dart';
 import 'package:recarga_telefonica_flutter/widget/components/button_icon.dart';

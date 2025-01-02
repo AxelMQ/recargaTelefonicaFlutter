@@ -122,9 +122,9 @@ class _TelefoniaDetailScreenState extends State<TelefoniaDetailScreen> {
 
   Future<void> _loadCodigoUSSDs() async {
     try {
-      final codigoUSSDDao = CodigoUSSDDao();
-      final ussds =
-          await codigoUSSDDao.retrieveCodigoUSSDByTelefoniaId(_telefonia.id!);
+      // final codigoUSSDDao = CodigoUSSDDao();
+      // final ussds =
+          // await codigoUSSDDao.retrieveCodigoUSSDByTelefoniaId(_telefonia.id!);
       // Haz algo con los USSDs obtenidos
     } catch (e) {
       _showMessageDialog(

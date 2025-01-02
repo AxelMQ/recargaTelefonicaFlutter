@@ -24,7 +24,7 @@ class RecargaDao {
     if (filter != 'todo') {
       query += ' WHERE r.estado = ?';
     }
-    
+
     // Ordenar por fecha en orden descendente y añadir LIMIT y OFFSET
     query += ' ORDER BY r.fecha DESC LIMIT ? OFFSET ?';
 
@@ -180,4 +180,27 @@ class RecargaDao {
         ..telefonia = telefonia;
     }).toList();
   }
+
+  Future<List<Map<String, dynamic>>> obtenerRecargasPorFecha(String fecha) async {
+  final Database db = await initializeDB();
+
+  // Consulta SQL para obtener las recargas de una fecha específica
+  final List<Map<String, dynamic>> result = await db.rawQuery('''
+    SELECT 
+      recarga.id AS recarga_id,
+      recarga.monto AS recarga_monto,
+      recarga.fecha AS recarga_fecha,
+      recarga.estado AS recarga_estado,
+      telefono.numero AS telefono_numero,
+      cliente.nombre AS cliente_nombre
+    FROM recarga
+    INNER JOIN telefono ON recarga.telefono_id = telefono.id
+    INNER JOIN cliente ON telefono.cliente_id = cliente.id
+    WHERE recarga.fecha = ?
+    ORDER BY recarga.id
+  ''', [fecha]);
+
+  return result;
+}
+
 }

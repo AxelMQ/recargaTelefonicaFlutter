@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:recarga_telefonica_flutter/data/cliente_dao.dart';
 import '../../model/cliente.dart';
-import '../../screen/ClienteDetail/cliente_detail_screen.dart';
 import '../components/alert_dialog_widget.dart';
 import '../components/confirm_alert_dialog.dart';
 import 'form_edit_cliente.dart';
