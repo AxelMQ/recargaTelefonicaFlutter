@@ -94,8 +94,7 @@ class ClienteDao {
     return result;
   }
 
-  Future<List<Map<String, dynamic>>>
-      obtenerRecargasPendientesConTelefonos() async {
+  Future<List<Map<String, dynamic>>> obtenerRecargasPorCliente() async {
     final Database db = await initializeDB();
 
     // Consulta para obtener recargas pendientes con detalles
@@ -107,7 +106,8 @@ class ClienteDao {
       recarga.id AS recarga_id,
       recarga.monto AS recarga_monto,
       recarga.estado AS recarga_estado,
-      telefonia.nombre AS telefonia_nombre
+      telefonia.nombre AS telefonia_nombre,
+      SUM(recarga.monto) OVER (PARTITION BY cliente.id) AS deuda_total
     FROM recarga
     INNER JOIN telefono ON recarga.telefono_id = telefono.id
     INNER JOIN cliente ON telefono.cliente_id = cliente.id
@@ -122,44 +122,54 @@ class ClienteDao {
   Future<List<Map<String, dynamic>>> obtenerRecargasPorFecha() async {
     final Database db = await initializeDB();
 
-    // Consulta SQL para obtener todas las recargas con sus detalles
+    // Consulta SQL para obtener recargas con detalles y totales por fecha
     final List<Map<String, dynamic>> result = await db.rawQuery('''
     SELECT 
-      recarga.fecha AS recarga_fecha,
       recarga.id AS recarga_id,
+      DATE(recarga.fecha) AS recarga_fecha,
       recarga.monto AS recarga_monto,
       recarga.estado AS recarga_estado,
       telefono.numero AS telefono_numero,
       cliente.nombre AS cliente_nombre,
-      telefonia.nombre AS telefonia_nombre
+      telefonia.nombre AS telefonia_nombre,
+      SUM(recarga.monto) OVER (PARTITION BY DATE(recarga.fecha)) AS monto_total_fecha
     FROM recarga
     INNER JOIN telefono ON recarga.telefono_id = telefono.id
     INNER JOIN cliente ON telefono.cliente_id = cliente.id
     INNER JOIN telefonia ON telefono.telefonia_id = telefonia.id
-    ORDER BY recarga.fecha, recarga.id
+    ORDER BY recarga_fecha, recarga.id
   ''');
 
-    // Agrupar las recargas por fecha (ignorando el tiempo)
-    final Map<String, List<Map<String, dynamic>>> recargasPorFecha = {};
+    // Agrupar las recargas por fecha
+    final Map<String, Map<String, dynamic>> recargasPorFecha = {};
 
     for (var recarga in result) {
-      // Formatear la fecha para ignorar la parte de tiempo
-      final fechaCompleta = recarga['recarga_fecha'] as String;
-      final fecha =
-          fechaCompleta.split('T')[0]; // Tomar solo la parte de la fecha
+      final fecha = recarga['recarga_fecha'] as String;
 
-      if (!recargasPorFecha.containsKey(fecha)) {
-        recargasPorFecha[fecha] = [];
-      }
-      recargasPorFecha[fecha]!.add(recarga);
+      // Inicializar la agrupación si no existe
+      recargasPorFecha[fecha] ??= {
+        'fecha': fecha,
+        'monto_total':
+            recarga['monto_total_fecha'], // Total acumulado por fecha
+        'detalles': [],
+      };
+
+      // Añadir el detalle de la recarga a la fecha correspondiente
+      recargasPorFecha[fecha]!['detalles'].add({
+        'recarga_id': recarga['recarga_id'],
+        'monto': recarga['recarga_monto'],
+        'estado': recarga['recarga_estado'],
+        'numero_telefono': recarga['telefono_numero'],
+        'cliente_nombre': recarga['cliente_nombre'],
+        'telefonia_nombre': recarga['telefonia_nombre'],
+      });
     }
 
-    // Convertir el mapa agrupado en una lista para facilitar su manejo
-    final List<Map<String, dynamic>> agrupados = [];
-    recargasPorFecha.forEach((fecha, recargas) {
-      agrupados.add({'fecha': fecha, 'recargas': recargas});
-    });
+    // Convertir el mapa en una lista y ordenarla por fecha de manera descendente
+    final recargasList = recargasPorFecha.values.toList();
+    recargasList
+        .sort((a, b) => b['fecha'].compareTo(a['fecha'])); // Orden descendente
 
-    return agrupados;
+    return recargasList;
   }
 }

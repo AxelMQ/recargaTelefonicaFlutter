@@ -93,7 +93,7 @@ class _HomeCobroScreenState extends State<HomeCobroScreen> {
 
   Widget _buildClientesConDeudas(ClienteDao clienteDao) {
     return FutureBuilder<List<Map<String, dynamic>>>(
-      future: clienteDao.obtenerRecargasPendientesConTelefonos(),
+      future: clienteDao.obtenerRecargasPorCliente(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -105,19 +105,22 @@ class _HomeCobroScreenState extends State<HomeCobroScreen> {
           return ListView.builder(
             itemCount: groupedData.length,
             itemBuilder: (context, index) {
-              final cliente = groupedData.keys.elementAt(index);
-              final recargas = groupedData[cliente]!;
+              final clienteNombre = groupedData.keys.elementAt(index);
+              final clienteData = groupedData[clienteNombre]!;
 
               return Card(
                 margin: const EdgeInsets.all(10.0),
                 child: ExpansionTile(
-                  title: Text(cliente), 
-                  children: recargas.map((recarga) {
+                  title: Text(clienteNombre),
+                  subtitle: Text(
+                      'Deuda: ${clienteData['deuda_total'].toStringAsFixed(2)} bs'),
+                  children: clienteData['recargas'].map<Widget>((recarga) {
                     final telefonia =
                         recarga['telefonia_nombre'] ?? 'Desconocido';
 
                     return ListTile(
-                      title: Text('Tel: ${recarga['telefono_numero']} - $telefonia'),
+                      title: Text(
+                          'Tel: ${recarga['telefono_numero']} - $telefonia'),
                       subtitle: Text(
                           'Monto: ${recarga['recarga_monto'].toStringAsFixed(2)} bs.'),
                       trailing: Text('Estado: ${recarga['recarga_estado']}'),
@@ -142,27 +145,33 @@ class _HomeCobroScreenState extends State<HomeCobroScreen> {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return const Center(child: Text('Error al cargar las recargas'));
-        } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+        } else if (snapshot.hasData &&
+            snapshot.data != null &&
+            snapshot.data!.isNotEmpty) {
           return ListView.builder(
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               final data = snapshot.data![index];
-              final fecha = data['fecha'];
-              final recargas = data['recargas'] as List<Map<String, dynamic>>;
+              final fecha = data['fecha'] ?? 'Fecha no disponible';
+              final montoTotal = data['monto_total'] ?? 0.0;
+              final recargas = data['detalles'] ?? [];
 
               return Card(
                 margin: const EdgeInsets.all(10.0),
                 child: ExpansionTile(
                   title: Text(fecha),
-                  children: recargas.map((recarga) {
+                  subtitle: Text('Total: bs. ${montoTotal.toStringAsFixed(2)}'),
+                  children: recargas.map<Widget>((recarga) {
                     final telefonia =
                         recarga['telefonia_nombre'] ?? 'Desconocido';
+                    final numeroTelefono =
+                        recarga['numero_telefono'] ?? 'Desconocido';
+                    final monto = recarga['monto'] ?? 0.0;
+                    final estado = recarga['estado'] ?? 'Desconocido';
                     return ListTile(
-                      title: Text(
-                          'Tel: ${recarga['telefono_numero']} - $telefonia'),
-                      subtitle: Text(
-                          'Monto: ${recarga['recarga_monto'].toStringAsFixed(2)}'),
-                      trailing: Text('Estado: ${recarga['recarga_estado']}'),
+                      title: Text('Tel: $numeroTelefono - $telefonia'),
+                      subtitle: Text('Monto: bs. ${monto.toStringAsFixed(2)}'),
+                      trailing: Text('Estado: $estado'),
                     );
                   }).toList(),
                 ),
@@ -176,29 +185,23 @@ class _HomeCobroScreenState extends State<HomeCobroScreen> {
     );
   }
 
-  Map<String, List<Map<String, dynamic>>> _groupDataByCliente(
+  Map<String, Map<String, dynamic>> _groupDataByCliente(
       List<Map<String, dynamic>> data) {
-    final Map<String, List<Map<String, dynamic>>> groupedData = {};
+    final Map<String, Map<String, dynamic>> groupedData = {};
+
     for (var recarga in data) {
       final clienteNombre = recarga['cliente_nombre'] as String;
-      if (!groupedData.containsKey(clienteNombre)) {
-        groupedData[clienteNombre] = [];
-      }
-      groupedData[clienteNombre]!.add(recarga);
-    }
-    return groupedData;
-  }
+      final deudaTotal = recarga['deuda_total'] as double;
 
-  Map<String, List<Map<String, dynamic>>> _groupDataByFecha(
-      List<Map<String, dynamic>> data) {
-    final Map<String, List<Map<String, dynamic>>> groupedData = {};
-    for (var recarga in data) {
-      final fecha = recarga['recarga_fecha'] as String;
-      if (!groupedData.containsKey(fecha)) {
-        groupedData[fecha] = [];
+      if (!groupedData.containsKey(clienteNombre)) {
+        groupedData[clienteNombre] = {
+          'deuda_total': deudaTotal,
+          'recargas': [],
+        };
       }
-      groupedData[fecha]!.add(recarga);
+      groupedData[clienteNombre]!['recargas'].add(recarga);
     }
+
     return groupedData;
   }
 }
