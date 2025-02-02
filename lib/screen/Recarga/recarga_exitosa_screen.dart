@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,78 +28,87 @@ class RecargaExitosaScreen extends StatelessWidget {
         controller: screenshotController,
         child: Container(
           color: const Color.fromARGB(255, 6, 95, 168),
+           alignment: Alignment.center,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/check.png',
-                      width: 100,
-                      height: 100,
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/check.png',
+                              width: 100,
+                              height: 100,
+                            ),
+                            Text(
+                              'Recarga exitosa!',
+                              style: GoogleFonts.dosis(
+                                  color: Colors.white,
+                                  fontSize: 37,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              'Resumen de la Transaccion',
+                              style: GoogleFonts.dosis(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w300),
+                            ),
+                            Center(
+                              child: InfoRecargaWidget(recarga: recarga),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  _sharedRecargaDetails(context, screenshotController);
+                                },
+                                icon: const Icon(Icons.share),
+                                label: const Text('COMPARTIR'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blueAccent,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 16),
+                                  textStyle: GoogleFonts.dosis(fontSize: 16),
+                                ),
+                              ),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                                    (Route<dynamic> route) => false,
+                                  );
+                                },
+                                icon: const Icon(Icons.home),
+                                label: const Text('VOLVER A INICIO'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 16),
+                                  textStyle: GoogleFonts.dosis(fontSize: 16),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
                     ),
-                    Text(
-                      'Recarga exitosa!',
-                      style: GoogleFonts.dosis(
-                          color: Colors.white,
-                          fontSize: 37,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Text(
-                      'Resumen de la Transaccion',
-                      style: GoogleFonts.dosis(
-                          color: Colors.white,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w300),
-                    ),
-                    Center(
-                      child: InfoRecargaWidget(recarga: recarga),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        _sharedRecargaDetails(context, screenshotController);
-                      },
-                      icon: const Icon(Icons.share),
-                      label: const Text('COMPARTIR'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 16),
-                        textStyle: GoogleFonts.dosis(fontSize: 16),
-                      ),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => const HomeScreen()),
-                          (Route<dynamic> route) => false,
-                        );
-                      },
-                      icon: const Icon(Icons.home),
-                      label: const Text('VOLVER A INICIO'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 16),
-                        textStyle: GoogleFonts.dosis(fontSize: 16),
-                      ),
-                    )
-                  ],
-                ),
-              )
             ],
           ),
         ),

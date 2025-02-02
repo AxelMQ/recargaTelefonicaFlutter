@@ -72,11 +72,11 @@ class _FormRecargasWidgetState extends State<FormRecargasWidget> {
           MaterialPageRoute(builder: (context) => RecargaExitosaScreen(recarga: recarga)),
         );
 
-        _showMessageDialog(
-          context,
-          'assets/confirm-animation.json',
-          'Recarga registrada exitosamente',
-        );
+        // _showMessageDialog(
+        //   context,
+        //   'assets/confirm-animation.json',
+        //   'Recarga registrada exitosamente',
+        // );
       } catch (e) {
         _showMessageDialog(
           context,
@@ -85,7 +85,7 @@ class _FormRecargasWidgetState extends State<FormRecargasWidget> {
         );
       }
 
-      print('Recarga creada: ${recarga.toMap()}');
+      // print('Recarga creada: ${recarga.toMap()}');
     }
   }
 

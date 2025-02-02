@@ -106,6 +106,7 @@ class ClienteDao {
       recarga.id AS recarga_id,
       recarga.monto AS recarga_monto,
       recarga.estado AS recarga_estado,
+      recarga.fecha AS recarga_fecha,
       telefonia.nombre AS telefonia_nombre
     FROM recarga
     INNER JOIN telefono ON recarga.telefono_id = telefono.id
@@ -136,6 +137,8 @@ class ClienteDao {
         'telefono_numero': row['telefono_numero'],
         'recarga_monto': row['recarga_monto'],
         'telefonia_nombre': row['telefonia_nombre'],
+        'recarga_fecha': row['recarga_fecha'],
+        'recarga_estado': row['recarga_estado'],
       });
     }
 
