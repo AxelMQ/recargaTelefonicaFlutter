@@ -97,7 +97,7 @@ class ClienteDao {
   Future<List<Map<String, dynamic>>> obtenerRecargasPorCliente() async {
     final Database db = await initializeDB();
 
-    // Consulta para obtener recargas pendientes con detalles
+    // Consulta para obtener todas las recargas pendientes con detalles
     final List<Map<String, dynamic>> result = await db.rawQuery('''
     SELECT 
       cliente.id AS cliente_id, 
@@ -106,8 +106,7 @@ class ClienteDao {
       recarga.id AS recarga_id,
       recarga.monto AS recarga_monto,
       recarga.estado AS recarga_estado,
-      telefonia.nombre AS telefonia_nombre,
-      SUM(recarga.monto) OVER (PARTITION BY cliente.id) AS deuda_total
+      telefonia.nombre AS telefonia_nombre
     FROM recarga
     INNER JOIN telefono ON recarga.telefono_id = telefono.id
     INNER JOIN cliente ON telefono.cliente_id = cliente.id
@@ -116,7 +115,31 @@ class ClienteDao {
     ORDER BY cliente.id, recarga.id
   ''');
 
-    return result;
+    // Mapa para agrupar recargas por cliente
+    Map<int, Map<String, dynamic>> clientesMap = {};
+
+    for (var row in result) {
+      int clienteId = row['cliente_id'] as int;
+
+      if (!clientesMap.containsKey(clienteId)) {
+        clientesMap[clienteId] = {
+          'cliente_id': clienteId,
+          'cliente_nombre': row['cliente_nombre'],
+          'deuda_total': 0.0, // Inicializamos en 0 y sumamos las recargas
+          'recargas': [],
+        };
+      }
+
+      clientesMap[clienteId]!['deuda_total'] += row['recarga_monto'] as double;
+      clientesMap[clienteId]!['recargas'].add({
+        'recarga_id': row['recarga_id'],
+        'telefono_numero': row['telefono_numero'],
+        'recarga_monto': row['recarga_monto'],
+        'telefonia_nombre': row['telefonia_nombre'],
+      });
+    }
+
+    return clientesMap.values.toList();
   }
 
   Future<List<Map<String, dynamic>>> obtenerRecargasPorFecha() async {
