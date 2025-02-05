@@ -37,17 +37,18 @@ class AppBarCliente extends StatelessWidget implements PreferredSizeWidget {
             color: Colors.white,
           ),
         ),
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_sharp,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.pop(context); // Volver a la pantalla anterior
-          },
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(
+        //     Icons.arrow_back_sharp,
+        //     color: Colors.white,
+        //   ),
+        //   onPressed: () {
+        //     Navigator.pop(context); // Volver a la pantalla anterior
+        //   },
+        // ),
       ),
     );
   }

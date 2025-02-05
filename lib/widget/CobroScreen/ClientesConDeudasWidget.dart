@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recarga_telefonica_flutter/data/cliente_dao.dart';
-
+import 'package:sqflite/sqflite.dart';
 import '../../screen/DetalleDeuda/detalle_deuda_screen.dart';
 
 class ClientesConDeudasWidget extends StatelessWidget {
   final ClienteDao clienteDao;
+  final Database database;
 
-  const ClientesConDeudasWidget({Key? key, required this.clienteDao})
-      : super(key: key);
+  const ClientesConDeudasWidget({
+    Key? key,
+    required this.clienteDao,
+    required this.database,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +32,17 @@ class ClientesConDeudasWidget extends StatelessWidget {
 
               return InkWell(
                 onTap: () {
-                  // Aquí puedes manejar un toque largo si lo deseas
+                  // Aquí puedes manejar un toque si lo deseas
                   // print('Long press en ${cliente['cliente_nombre']}');
                 },
                 onLongPress: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          DetalleDeudaScreen(cliente: cliente),
+                      builder: (context) => DetalleDeudaScreen(
+                        cliente: cliente,
+                        database: database,
+                      ),
                     ),
                   );
                 },

@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:recarga_telefonica_flutter/data/cliente_dao.dart';
 import 'DeudaTotalWidget.dart';
 import 'FiltrosWidget.dart';
+import 'package:sqflite/sqflite.dart';
 import 'ClientesConDeudasWidget.dart';
 import 'RecargasPorFechaWidget.dart';
 
 class BodyCobro extends StatefulWidget {
   final ClienteDao clienteDao;
+  final Database database;
   final String selectedFilter;
   final void Function(String) updateFilter;
 
   const BodyCobro({
     Key? key,
     required this.clienteDao,
+    required this.database,
     required this.selectedFilter,
     required this.updateFilter,
   }) : super(key: key);
@@ -48,7 +51,10 @@ class _BodyCobroState extends State<BodyCobro> {
         const Divider(endIndent: 30, indent: 30),
         Expanded(
           child: _selectedFilter == 'cliente'
-              ? ClientesConDeudasWidget(clienteDao: widget.clienteDao)
+              ? ClientesConDeudasWidget(
+                  clienteDao: widget.clienteDao, 
+                  database: widget.database,
+                  )
               : RecargasPorFechaWidget(clienteDao: widget.clienteDao),
         ),
       ],
