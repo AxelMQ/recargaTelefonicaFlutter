@@ -156,6 +156,7 @@ class ClienteDao {
       recarga.monto AS recarga_monto,
       recarga.estado AS recarga_estado,
       telefono.numero AS telefono_numero,
+      cliente.id AS cliente_id,
       cliente.nombre AS cliente_nombre,
       telefonia.nombre AS telefonia_nombre,
       SUM(recarga.monto) OVER (PARTITION BY DATE(recarga.fecha)) AS monto_total_fecha
@@ -163,6 +164,7 @@ class ClienteDao {
     INNER JOIN telefono ON recarga.telefono_id = telefono.id
     INNER JOIN cliente ON telefono.cliente_id = cliente.id
     INNER JOIN telefonia ON telefono.telefonia_id = telefonia.id
+    WHERE recarga.estado = 'Pendiente'
     ORDER BY recarga_fecha, recarga.id
   ''');
 
@@ -177,6 +179,9 @@ class ClienteDao {
         'fecha': fecha,
         'monto_total':
             recarga['monto_total_fecha'], // Total acumulado por fecha
+        // 'cliente_id': recarga['cliente_id'], // Agregar cliente_id
+        'deuda_total':
+            recarga['monto_total_fecha'], // Inicialmente igual al monto total
         'detalles': [],
       };
 
@@ -186,6 +191,7 @@ class ClienteDao {
         'monto': recarga['recarga_monto'],
         'estado': recarga['recarga_estado'],
         'numero_telefono': recarga['telefono_numero'],
+        'cliente_id': recarga['cliente_id'],
         'cliente_nombre': recarga['cliente_nombre'],
         'telefonia_nombre': recarga['telefonia_nombre'],
       });

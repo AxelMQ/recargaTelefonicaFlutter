@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:recarga_telefonica_flutter/data/cliente_dao.dart';
-import 'package:recarga_telefonica_flutter/widget/CobroScreen/BodyCobroWidget';
+import 'package:recarga_telefonica_flutter/widget/CobroScreen/BodyCobroWidget.dart';
 import '../widget/HomeScreen/app_bar_cobro.dart';
 import '../widget/HomeScreen/menu_drawer_widget.dart';
 import 'package:sqflite/sqflite.dart';

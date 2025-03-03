@@ -52,10 +52,13 @@ class _BodyCobroState extends State<BodyCobro> {
         Expanded(
           child: _selectedFilter == 'cliente'
               ? ClientesConDeudasWidget(
-                  clienteDao: widget.clienteDao, 
+                  clienteDao: widget.clienteDao,
                   database: widget.database,
-                  )
-              : RecargasPorFechaWidget(clienteDao: widget.clienteDao),
+                )
+              : RecargasPorFechaWidget(
+                  clienteDao: widget.clienteDao,
+                  database: widget.database,
+                ),
         ),
       ],
     );

@@ -1,38 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:recarga_telefonica_flutter/widget/DetalleDeuda/ClienteInfoWidget.dart';
-import 'package:recarga_telefonica_flutter/widget/DetalleDeuda/DetalleDeudaLogic.dart';
-import 'package:recarga_telefonica_flutter/widget/DetalleDeuda/RecargasListWidget.dart';
+import 'package:recarga_telefonica_flutter/widget/DetalleDeuda/DetalleFechaDeudaLogic.dart';
+import 'package:recarga_telefonica_flutter/widget/DetalleDeuda/FechaInfoWidget.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:recarga_telefonica_flutter/widget/DetalleDeuda/RecargaFechaListWidget.dart';
 import 'package:sqflite/sqflite.dart';
 
-class BodyDetalleDeudaWidget extends StatefulWidget {
-  const BodyDetalleDeudaWidget({
+class BodyDetalleDeudaFechaWidget extends StatefulWidget {
+  const BodyDetalleDeudaFechaWidget({
     super.key,
-    required this.cliente,
-    required this.recargas,
+    required this.recarga,
     required this.database,
   });
 
-  final Map<String, dynamic> cliente;
-  final List recargas;
+  final Map<String, dynamic> recarga;
   final Database database;
 
   @override
-  BodyDetalleDeudaWidgetState createState() => BodyDetalleDeudaWidgetState();
+  BodyDetalleDeudaFechaWidgetState createState() =>
+      BodyDetalleDeudaFechaWidgetState();
 }
 
-class BodyDetalleDeudaWidgetState extends State<BodyDetalleDeudaWidget> {
-  late DetalleDeudaLogic logic;
+class BodyDetalleDeudaFechaWidgetState
+    extends State<BodyDetalleDeudaFechaWidget> {
+  late DetalleFechaDeudaLogic logic;
 
   @override
   void initState() {
     super.initState();
-    logic = DetalleDeudaLogic(
+    logic = DetalleFechaDeudaLogic(
       database: widget.database,
-      cliente: widget.cliente,
-      recargas: widget.recargas,
+      fechaRecargas: widget.recarga,
+      recargas: List<Map<String, dynamic>>.from(widget.recarga['detalles']),
     );
   }
+  
 
   Future<void> confirmarSalida(BuildContext context) async {
     if (logic.recargasPagadas.isEmpty) {
@@ -85,7 +86,8 @@ class BodyDetalleDeudaWidgetState extends State<BodyDetalleDeudaWidget> {
       await logic.guardarCambios();
     } else {
       setState(() {
-        logic.restaurarRecargas(widget.recargas);
+        logic.restaurarRecargas(
+            List<Map<String, dynamic>>.from(widget.recarga['detalles']));
       });
     }
 
@@ -100,10 +102,10 @@ class BodyDetalleDeudaWidgetState extends State<BodyDetalleDeudaWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Informacion del Cliente
-          ClienteInfoWidget(cliente: widget.cliente),
+          // Informacion
+          FechaInfoWidget(recarga: widget.recarga),
           // Lista de recargas detalladas
-          if (widget.recargas.isEmpty)
+          if (widget.recarga.isEmpty)
             Center(
               child: Text(
                 'No hay recargas pendientes',
@@ -113,14 +115,20 @@ class BodyDetalleDeudaWidgetState extends State<BodyDetalleDeudaWidget> {
               ),
             )
           else
-            Recargaslistwidget(
-              recargas: widget.recargas,
-              onPay: (recarga, monto) {
+            RecargaFechalistwidget(
+              recargas: (widget.recarga['detalles'] as List)
+                  .map((e) => e as Map<String, dynamic>)
+                  .toList(),
+              onPay: (int index, double monto) {
+                print(
+                    'Pago confirmado para la recarga en el índice $index con monto $monto');
                 setState(() {
-                  logic.marcarPagado(recarga, monto);
+                  logic.marcarPagado(index, monto);
+                  widget.recarga['detalles'].removeAt(index);
                 });
+                // Aquí puedes agregar la lógica para marcar la recarga como pagada
               },
-            ),
+            )
         ],
       ),
     );
