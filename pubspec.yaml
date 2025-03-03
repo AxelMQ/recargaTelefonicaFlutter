@@ -23,6 +23,7 @@ dependencies:
   intl: ^0.18.1
   screenshot: ^3.0.0
   share_plus: ^7.2.2
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -36,3 +37,10 @@ flutter:
   
   assets:
     - assets/
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_logo.png"  # Ruta a tu logo
+
+

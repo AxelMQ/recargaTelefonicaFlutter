@@ -1,7 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.recarga_telefonica_flutter">
+    
+    <!-- Permiso para acceder a Internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Permiso para escribir en almacenamiento externo -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
    <application
-        android:label="recarga_telefonica_flutter"
+        android:label="Recarga Facil"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
