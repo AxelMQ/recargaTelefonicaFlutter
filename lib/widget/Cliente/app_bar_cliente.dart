@@ -5,11 +5,15 @@ class AppBarCliente extends StatelessWidget implements PreferredSizeWidget {
   @override
   final Size preferredSize;
 
-  const AppBarCliente({Key? key, this.text})
-      : preferredSize = const Size.fromHeight(67.0),
+  const AppBarCliente({
+    Key? key,
+    this.text,
+    this.action,
+  })  : preferredSize = const Size.fromHeight(67.0),
         super(key: key);
 
   final String? text;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +44,9 @@ class AppBarCliente extends StatelessWidget implements PreferredSizeWidget {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        // leading: IconButton(
-        //   icon: const Icon(
-        //     Icons.arrow_back_sharp,
-        //     color: Colors.white,
-        //   ),
-        //   onPressed: () {
-        //     Navigator.pop(context); // Volver a la pantalla anterior
-        //   },
-        // ),
+        actions: [
+          if (action != null) action!, 
+        ],
       ),
     );
   }

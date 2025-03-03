@@ -95,7 +95,8 @@ class BodyDetalleDeudaWidgetState extends State<BodyDetalleDeudaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      color: Colors.white,
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
